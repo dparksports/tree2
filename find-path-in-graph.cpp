@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <vector>
 #include <map>
+#include <queue>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ class Tree {
 public:
     map<int,vector<int>> graph;
 
-    void findPath(int a, int b) {
+    void findPath(queue<int> heads, int a, int b) {
         vector<int> children = graph[a];
         if (children.empty()) {
             return;
@@ -20,13 +21,23 @@ public:
 
         for (int i = 0; i < children.size(); ++i) {
             if (children[i] == b) {
-                cout << a << "," << b << endl;
+                if (heads.empty()) {
+                    cout << a << "," << b << endl;
+                } else {
+                    while (! heads.empty()) {
+                        int front = heads.front();
+                        heads.pop();
+                        cout << front << ",";
+                    }
+                    cout << a << "," << b << endl;
+                }
                 break;
             }
         }
 
+        heads.push(a);
         for (int j = 0; j < children.size(); ++j) {
-            findPath(children[j], b);
+            findPath(heads, children[j], b);
         }
     }
 
@@ -79,9 +90,10 @@ int main(){
         cin >> a;
         cin >> b;
 
-        tree.findPath(a, b);
+        queue<int> heads;
+        tree.findPath(heads, a, b);
     }
 
-    cout << "a" << endl;
+    cout << " " << endl;
     return 0;
 }
